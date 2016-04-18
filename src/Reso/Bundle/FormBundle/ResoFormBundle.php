@@ -2,7 +2,9 @@
 
 namespace Reso\Bundle\FormBundle;
 
-class ResoFormBundle
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+class ResoFormBundle extends Bundle
 {
 
 }
