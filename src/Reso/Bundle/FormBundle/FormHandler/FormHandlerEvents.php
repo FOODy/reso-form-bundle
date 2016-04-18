@@ -6,7 +6,10 @@ use Symfony\Component\Form\FormEvents;
 
 final class FormHandlerEvents
 {
+	// Global events
 	const CONSTRUCTED = 'rs.form_handler.constructed';
+
+	// Local events
 	const PRE_SET_DATA = FormEvents::PRE_SET_DATA;
 	const POST_SET_DATA = FormEvents::POST_SET_DATA;
 	const PRE_SUBMIT = FormEvents::PRE_SUBMIT;
