@@ -1,0 +1,17 @@
+{
+	"name": "reso/form-bundle",
+	"description": "",
+	"keywords": [],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Vitalij Rerich",
+			"homepage": "http://www.rerich.me/"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Reso\\Bundle\\FormBundle\\": "src/Reso/Bundle/FormBundle/"
+		}
+	}
+}

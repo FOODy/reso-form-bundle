@@ -1,0 +1,4 @@
+services:
+    rs.form_handler.factory:
+        class: Reso\Bundle\FormBundle\FormHandler\FormHandlerFactory
+        arguments: ['@service_container']
