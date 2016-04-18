@@ -51,8 +51,13 @@ class FormHandlerFactory
 	public function fromForm(FormInterface $form)
 	{
 		$handlerClass = $this->handlerClass;
+		$handler = new $handlerClass($this->container, $form);
 
-		return new $handlerClass($this->container, $form);
+		$this->container
+			->get('event_dispatcher')
+			->dispatch(FormHandlerEvents::CONSTRUCTED, new FormHandlerEvent($handler, null));
+
+		return $handler;
 	}
 
 	/**
