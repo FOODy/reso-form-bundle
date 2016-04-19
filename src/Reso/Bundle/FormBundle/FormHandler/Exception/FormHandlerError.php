@@ -4,22 +4,35 @@ namespace Reso\Bundle\FormBundle\FormHandler\Exception;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class FormHandlerError extends HttpException implements FormHandlerErrorInterface
+class FormHandlerError extends \Exception implements FormHandlerErrorInterface
 {
+	/**
+	 * @var int
+	 */
+	protected $statusCode;
+
 	/**
 	 * Constructor.
 	 *
 	 * @param string $message
 	 * @param int $statusCode
 	 * @param \Exception|null $previous
-	 * @param array $headers
 	 * @param int $code
 	 */
-	public function __construct($message, $statusCode = 400, \Exception $previous = null, array $headers = [], $code = 0)
+	public function __construct($message, $statusCode = 400, \Exception $previous = null, $code = 0)
 	{
-		parent::__construct($statusCode, $message, $previous, $headers, $code);
+		$this->statusCode = $statusCode;
+
+		parent::__construct($message, $code, $previous);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getStatusCode()
+	{
+		return $this->statusCode;
 	}
 
 	/**
