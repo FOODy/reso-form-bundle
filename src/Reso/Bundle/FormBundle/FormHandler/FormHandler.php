@@ -7,6 +7,7 @@ use Reso\Bundle\FormBundle\FormHandler\Exception\FormHandlerError;
 use Reso\Bundle\FormBundle\FormHandler\Exception\FormHandlerErrorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -328,6 +329,17 @@ class FormHandler
 	public function addListener($eventName, $listener, $priority = 0)
 	{
 		$this->dispatcher->addListener($eventName, $listener, $priority);
+
+		return $this;
+	}
+
+	/**
+	 * @param EventSubscriberInterface $subscriber
+	 * @return $this
+	 */
+	public function addSubscriber(EventSubscriberInterface $subscriber)
+	{
+		$this->dispatcher->addSubscriber($subscriber);
 
 		return $this;
 	}

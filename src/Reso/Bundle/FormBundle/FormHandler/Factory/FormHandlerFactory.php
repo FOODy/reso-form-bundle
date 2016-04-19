@@ -5,6 +5,7 @@ namespace Reso\Bundle\FormBundle\FormHandler\Factory;
 use Reso\Bundle\FormBundle\FormHandler\FormHandler;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
@@ -23,6 +24,11 @@ class FormHandlerFactory implements ContainerAwareInterface
 	 * @var string
 	 */
 	private $handlerClass;
+
+	/**
+	 * @var array
+	 */
+	private $handlerEventSubscriberServices = [];
 
 	/**
 	 * Constructor.
@@ -73,6 +79,14 @@ class FormHandlerFactory implements ContainerAwareInterface
 	}
 
 	/**
+	 * @param string $serviceId
+	 */
+	public function addHandlerEventSubscriberService($serviceId)
+	{
+		$this->handlerEventSubscriberServices[] = $serviceId;
+	}
+
+	/**
 	 * @param FormInterface $form
 	 * @param array $options
 	 * @return FormHandler
@@ -91,7 +105,19 @@ class FormHandlerFactory implements ContainerAwareInterface
 		$options = $this->optionsResolver->resolve($options);
 
 		$handlerClass = $options['class'];
+
+		/** @var FormHandler $handler */
 		$handler = new $handlerClass($this->container, $form, $options);
+
+		foreach ($this->handlerEventSubscriberServices as $serviceId) {
+			$subscriber = $this->container->get($serviceId);
+
+			if (!$subscriber instanceof EventSubscriberInterface) {
+				throw new \InvalidArgumentException(sprintf('Service "%s" does not implement EventSubscriberInterface.', get_class($subscriber)));
+			}
+
+			$handler->addSubscriber($subscriber);
+		}
 
 		$dispatcher->dispatch(FormHandlerFactoryEvents::POST_CREATE_HANDLER, new Event\PostCreateHandlerEvent($handler));
 
