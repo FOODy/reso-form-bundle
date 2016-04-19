@@ -359,9 +359,9 @@ class FormHandler
 		} catch (FormHandlerErrorInterface $error) {
 			$this->setCaughtError($error);
 		} catch (HttpException $error) {
-			$this->setCaughtError(new FormHandlerError($error->getMessage(), $error->getStatusCode(), $error));
+			$this->setCaughtError(FormHandlerError::fromMessage($error->getMessage(), $error->getStatusCode(), $error));
 		} catch (\Exception $error) {
-			$this->setCaughtError(new FormHandlerError('', 500, $error));
+			$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
 		}
 
 		return $this;
@@ -385,7 +385,7 @@ class FormHandler
 		}
 
 		if ($this->caughtError !== null) {
-			return $this->caughtError->toResponse();
+			return $this->caughtError->getResponse();
 		}
 
 		$message = null;

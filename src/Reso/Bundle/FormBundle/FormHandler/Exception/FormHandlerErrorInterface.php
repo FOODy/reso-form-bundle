@@ -9,5 +9,5 @@ interface FormHandlerErrorInterface
 	/**
 	 * @return Response
 	 */
-	public function toResponse();
+	public function getResponse();
 }

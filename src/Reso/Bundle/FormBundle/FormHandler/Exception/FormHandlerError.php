@@ -8,38 +8,50 @@ use Symfony\Component\HttpFoundation\Response;
 class FormHandlerError extends \Exception implements FormHandlerErrorInterface
 {
 	/**
-	 * @var int
+	 * @var Response
 	 */
-	protected $statusCode;
+	protected $response;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param string $message
-	 * @param int $statusCode
+	 * @param Response $response
 	 * @param \Exception|null $previous
-	 * @param int $code
 	 */
-	public function __construct($message, $statusCode = 400, \Exception $previous = null, $code = 0)
+	public function __construct($message, Response $response, \Exception $previous = null)
 	{
-		$this->statusCode = $statusCode;
+		$this->response = $response;
 
-		parent::__construct($message, $code, $previous);
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getStatusCode()
-	{
-		return $this->statusCode;
+		parent::__construct($message, 0, $previous);
 	}
 
 	/**
 	 * @return Response
 	 */
-	public function toResponse()
+	public function getResponse()
 	{
-		return new JsonResponse(['message' => $this->getMessage()], $this->getStatusCode());
+		return $this->response;
+	}
+
+	/**
+	 * @param string $message
+	 * @param int $statusCode
+	 * @param \Exception $previous
+	 * @return static
+	 */
+	static public function fromMessage($message, $statusCode = 400, \Exception $previous = null)
+	{
+		return new static($message, new JsonResponse(['message' => $message], $statusCode), $previous);
+	}
+
+	/**
+	 * @param Response $response
+	 * @param \Exception $previous
+	 * @return static
+	 */
+	static public function fromResponse(Response $response, \Exception $previous = null)
+	{
+		return new static('', $response, $previous);
 	}
 }
