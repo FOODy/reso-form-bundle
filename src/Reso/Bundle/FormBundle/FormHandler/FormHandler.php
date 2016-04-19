@@ -65,7 +65,7 @@ class FormHandler
 	/**
 	 * @var FormHandlerErrorInterface
 	 */
-	private $caughtException;
+	private $caughtError;
 
 	/**
 	 * @var callable
@@ -239,18 +239,18 @@ class FormHandler
 	/**
 	 * @return FormHandlerErrorInterface
 	 */
-	public function getCaughtException()
+	public function getCaughtError()
 	{
-		return $this->caughtException;
+		return $this->caughtError;
 	}
 
 	/**
-	 * @param FormHandlerErrorInterface $caughtException
+	 * @param FormHandlerErrorInterface $caughtError
 	 * @return $this
 	 */
-	public function setCaughtException(FormHandlerErrorInterface $caughtException = null)
+	public function setCaughtError(FormHandlerErrorInterface $caughtError = null)
 	{
-		$this->caughtException = $caughtException;
+		$this->caughtError = $caughtError;
 
 		return $this;
 	}
@@ -357,11 +357,11 @@ class FormHandler
 				->submit($request)
 				->flush();
 		} catch (FormHandlerErrorInterface $error) {
-			$this->setCaughtException($error);
+			$this->setCaughtError($error);
 		} catch (HttpException $error) {
-			$this->setCaughtException(new FormHandlerError($error->getMessage(), $error->getStatusCode(), $error));
+			$this->setCaughtError(new FormHandlerError($error->getMessage(), $error->getStatusCode(), $error));
 		} catch (\Exception $error) {
-			$this->setCaughtException(new FormHandlerError('', 500, $error));
+			$this->setCaughtError(new FormHandlerError('', 500, $error));
 		}
 
 		return $this;
@@ -372,7 +372,7 @@ class FormHandler
 	 */
 	public function isValid()
 	{
-		return $this->caughtException === null && $this->form->isValid();
+		return $this->caughtError === null && $this->form->isValid();
 	}
 
 	/**
@@ -384,8 +384,8 @@ class FormHandler
 			return new JsonResponse($this->getSerializedData());
 		}
 
-		if ($this->caughtException !== null) {
-			return $this->caughtException->toResponse();
+		if ($this->caughtError !== null) {
+			return $this->caughtError->toResponse();
 		}
 
 		$message = null;
@@ -408,7 +408,7 @@ class FormHandler
 	 */
 	protected function setData($data)
 	{
-		$this->caughtException = null;
+		$this->caughtError = null;
 		$this->serializedData = null;
 
 		if (is_object($data)) {
