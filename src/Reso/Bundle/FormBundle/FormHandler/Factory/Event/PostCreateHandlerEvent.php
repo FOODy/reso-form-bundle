@@ -14,20 +14,13 @@ class PostCreateHandlerEvent extends Event
 	private $formHandler;
 
 	/**
-	 * @var array
-	 */
-	private $options = [];
-
-	/**
 	 * Constructor.
 	 *
 	 * @param FormHandler $formHandler
-	 * @param array $options
 	 */
-	public function __construct(FormHandler $formHandler, array $options)
+	public function __construct(FormHandler $formHandler)
 	{
 		$this->formHandler = $formHandler;
-		$this->options = $options;
 	}
 
 	/**
@@ -44,13 +37,5 @@ class PostCreateHandlerEvent extends Event
 	public function getFormHandler()
 	{
 		return $this->formHandler;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getOptions()
-	{
-		return $this->options;
 	}
 }

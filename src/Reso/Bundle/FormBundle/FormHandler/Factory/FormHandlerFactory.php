@@ -93,9 +93,9 @@ class FormHandlerFactory
 		$options = $this->optionsResolver->resolve($options);
 
 		$handlerClass = $options['class'];
-		$handler = new $handlerClass($this->container, $form);
+		$handler = new $handlerClass($this->container, $form, $options);
 
-		$dispatcher->dispatch(FormHandlerFactoryEvents::POST_CREATE_HANDLER, new Event\PostCreateHandlerEvent($handler, $options));
+		$dispatcher->dispatch(FormHandlerFactoryEvents::POST_CREATE_HANDLER, new Event\PostCreateHandlerEvent($handler));
 
 		return $handler;
 	}

@@ -34,6 +34,11 @@ class FormHandler
 	/**
 	 * @var array
 	 */
+	private $options;
+
+	/**
+	 * @var array
+	 */
 	private $attributes = [];
 
 	/**
@@ -71,11 +76,13 @@ class FormHandler
 	 *
 	 * @param ContainerInterface $container
 	 * @param FormInterface $form
+	 * @param array $options
 	 */
-	public function __construct(ContainerInterface $container, FormInterface $form)
+	public function __construct(ContainerInterface $container, FormInterface $form, array $options)
 	{
 		$this->container = $container;
 		$this->form = $form;
+		$this->options = $options;
 		$this->serializer = function ($data) {
 			/** @var object $data */
 			return $data->toArray();
@@ -125,6 +132,36 @@ class FormHandler
 	public function getEntityManager()
 	{
 		return $this->container->get('doctrine')->getManager($this->entityManagerName);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getOptions()
+	{
+		return $this->options;
+	}
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function hasOption($name)
+	{
+		return array_key_exists($name, $this->options);
+	}
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getOption($name)
+	{
+		if ($this->hasOption($name)) {
+			return $this->options[$name];
+		}
+
+		throw new \InvalidArgumentException(sprintf('Option "%s" does not exist!', $name));
 	}
 
 	/**
