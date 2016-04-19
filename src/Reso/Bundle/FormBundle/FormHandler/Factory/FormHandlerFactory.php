@@ -3,18 +3,16 @@
 namespace Reso\Bundle\FormBundle\FormHandler\Factory;
 
 use Reso\Bundle\FormBundle\FormHandler\FormHandler;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FormHandlerFactory
+class FormHandlerFactory implements ContainerAwareInterface
 {
-	/**
-	 * @var ContainerInterface
-	 */
-	private $container;
+	use ContainerAwareTrait;
 
 	/**
 	 * @var OptionsResolver
@@ -24,16 +22,16 @@ class FormHandlerFactory
 	/**
 	 * @var string
 	 */
-	private $handlerClass = FormHandler::class;
+	private $handlerClass;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param ContainerInterface $container
+	 * @param string $handlerClass
 	 */
-	public function __construct(ContainerInterface $container)
+	public function __construct($handlerClass)
 	{
-		$this->container = $container;
+		$this->handlerClass = $handlerClass;
 	}
 
 	/**

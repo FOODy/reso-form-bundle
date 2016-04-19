@@ -1,4 +1,9 @@
+parameters:
+    rs.form_handler.class: Reso\Bundle\FormBundle\FormHandler\FormHandler
+
 services:
     rs.form_handler.factory:
         class: Reso\Bundle\FormBundle\FormHandler\Factory\FormHandlerFactory
-        arguments: ['@service_container']
+        arguments: ['%rs.form_handler.class%']
+        calls:
+            - [setContainer, ['@service_container']]
