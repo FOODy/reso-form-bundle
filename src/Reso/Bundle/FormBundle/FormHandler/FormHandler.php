@@ -52,7 +52,7 @@ class FormHandler
 	private $originalData;
 
 	/**
-	 * @var \Closure
+	 * @var callable
 	 */
 	private $serializer;
 
@@ -67,7 +67,7 @@ class FormHandler
 	private $caughtException;
 
 	/**
-	 * @var \Closure
+	 * @var callable
 	 */
 	private $persister;
 
@@ -217,7 +217,7 @@ class FormHandler
 	}
 
 	/**
-	 * @return \Closure|string
+	 * @return callable
 	 */
 	public function getSerializer()
 	{
@@ -225,10 +225,10 @@ class FormHandler
 	}
 
 	/**
-	 * @param \Closure $serializer
+	 * @param callable $serializer
 	 * @return FormHandler
 	 */
-	public function setSerializer(\Closure $serializer)
+	public function setSerializer($serializer)
 	{
 		$this->serializer = $serializer;
 
@@ -255,7 +255,7 @@ class FormHandler
 	}
 
 	/**
-	 * @return \Closure
+	 * @return callable
 	 */
 	public function getPersister()
 	{
@@ -263,10 +263,10 @@ class FormHandler
 	}
 
 	/**
-	 * @param \Closure $persister
+	 * @param callable $persister
 	 * @return $this
 	 */
-	public function setPersister(\Closure $persister = null)
+	public function setPersister($persister)
 	{
 		$this->persister = $persister;
 
@@ -321,11 +321,11 @@ class FormHandler
 
 	/**
 	 * @param string $eventName
-	 * @param \Closure $listener
+	 * @param callable $listener
 	 * @param int $priority
 	 * @return $this
 	 */
-	public function addListener($eventName, \Closure $listener, $priority = 0)
+	public function addListener($eventName, $listener, $priority = 0)
 	{
 		$this->dispatcher->addListener($eventName, $listener, $priority);
 
