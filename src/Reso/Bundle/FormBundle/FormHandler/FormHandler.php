@@ -348,6 +348,8 @@ class FormHandler
 			$this->setCaughtException($error);
 		} catch (HttpException $error) {
 			$this->setCaughtException(new FormHandlerError($error->getMessage(), $error->getStatusCode(), $error, $error->getHeaders()));
+		} catch (\Exception $error) {
+			$this->setCaughtException(new FormHandlerError('', 500, $error));
 		}
 
 		return $this;
