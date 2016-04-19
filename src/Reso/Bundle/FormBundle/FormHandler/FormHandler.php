@@ -32,6 +32,11 @@ class FormHandler
 	private $entityManagerName;
 
 	/**
+	 * @var array
+	 */
+	private $attributes = [];
+
+	/**
 	 * @var FormInterface
 	 */
 	private $form;
@@ -40,11 +45,6 @@ class FormHandler
 	 * @var mixed
 	 */
 	private $originalData;
-
-	/**
-	 * @var array
-	 */
-	private $eventNames = [];
 
 	/**
 	 * @var \Closure
@@ -128,6 +128,58 @@ class FormHandler
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getAttributes()
+	{
+		return $this->attributes;
+	}
+
+	/**
+	 * @param array $attributes
+	 * @return $this
+	 */
+	public function setAttributes(array $attributes)
+	{
+		$this->attributes = $attributes;
+
+		return $this;
+	}
+
+	/**
+	 * @param array $attributes
+	 * @return $this
+	 */
+	public function addAttributes(array $attributes)
+	{
+		$this->attributes = array_merge($this->attributes, $attributes);
+
+		return $this;
+	}
+
+	/**
+	 * @param string $name
+	 * @param mixed $defaultValue
+	 * @return mixed
+	 */
+	public function getAttribute($name, $defaultValue = null)
+	{
+		return array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $defaultValue;
+	}
+
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 * @return $this
+	 */
+	public function setAttribute($name, $value)
+	{
+		$this->attributes[$name] = $value;
+
+		return $this;
+	}
+
+	/**
 	 * @return \Closure|string
 	 */
 	public function getSerializer()
@@ -142,19 +194,6 @@ class FormHandler
 	public function setSerializer(\Closure $serializer)
 	{
 		$this->serializer = $serializer;
-
-		return $this;
-	}
-
-	/**
-	 * @param string $eventType
-	 * @param string $eventName
-	 * @see FormHandlerEventType
-	 * @return $this
-	 */
-	public function setEventName($eventType, $eventName)
-	{
-		$this->eventNames[$eventType] = $eventName;
 
 		return $this;
 	}
