@@ -459,6 +459,11 @@ class FormHandler
 			return $this;
 		}
 
+		$this->dispatcher->dispatch(
+			FormHandlerEvents::POST_VALIDATE,
+			new FormHandlerEvent($this, $this->getData())
+		);
+
 		return $this;
 	}
 
