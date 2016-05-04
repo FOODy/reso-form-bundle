@@ -361,6 +361,12 @@ class FormHandler
 		} catch (HttpException $error) {
 			$this->setCaughtError(FormHandlerError::fromMessage($error->getMessage(), $error->getStatusCode(), $error));
 		} catch (\Exception $error) {
+			$this->container->get('logger')->addError('[' . get_class($error) . '] ' . $error->getMessage(), [
+				'file' => $error->getFile(),
+				'line' => $error->getLine(),
+				'trace' => $error->getTraceAsString(),
+			]);
+
 			$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
 		}
 
