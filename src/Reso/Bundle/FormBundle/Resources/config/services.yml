@@ -4,6 +4,6 @@ parameters:
 services:
     rs.form_handler.factory:
         class: Reso\Bundle\FormBundle\FormHandler\Factory\FormHandlerFactory
-        arguments: ['%rs.form_handler.class%']
+        arguments: ['@form.factory', '%rs.form_handler.class%']
         calls:
             - [setContainer, ['@service_container']]

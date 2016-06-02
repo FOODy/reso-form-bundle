@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,6 +15,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FormHandlerFactory implements ContainerAwareInterface
 {
 	use ContainerAwareTrait;
+
+	/**
+	 * @var FormFactory
+	 */
+	private $formFactory;
 
 	/**
 	 * @var OptionsResolver
@@ -33,10 +39,12 @@ class FormHandlerFactory implements ContainerAwareInterface
 	/**
 	 * Constructor.
 	 *
+	 * @param FormFactory $formFactory
 	 * @param string $handlerClass
 	 */
-	public function __construct($handlerClass)
+	public function __construct(FormFactory $formFactory, $handlerClass)
 	{
+		$this->formFactory = $formFactory;
 		$this->handlerClass = $handlerClass;
 	}
 
@@ -122,6 +130,19 @@ class FormHandlerFactory implements ContainerAwareInterface
 		$dispatcher->dispatch(FormHandlerFactoryEvents::POST_CREATE_HANDLER, new Event\PostCreateHandlerEvent($handler));
 
 		return $handler;
+	}
+
+	/**
+	 * @param string $type
+	 * @param array $typeOptions
+	 * @param array $handlerOptions
+	 * @return FormHandler
+	 */
+	public function fromFormType($type, array $typeOptions = [], array $handlerOptions = [])
+	{
+		$form = $this->formFactory->create($type, null, $typeOptions);
+
+		return $this->fromForm($form, $handlerOptions);
 	}
 
 	/**
