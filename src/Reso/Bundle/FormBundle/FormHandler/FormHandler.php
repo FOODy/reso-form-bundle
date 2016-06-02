@@ -361,13 +361,19 @@ class FormHandler
 		} catch (HttpException $error) {
 			$this->setCaughtError(FormHandlerError::fromMessage($error->getMessage(), $error->getStatusCode(), $error));
 		} catch (\Exception $error) {
-			$this->container->get('logger')->addError('[' . get_class($error) . '] ' . $error->getMessage(), [
+			$debugMessage = '[' . get_class($error) . '] ' . $error->getMessage();
+
+			$this->container->get('logger')->addError($debugMessage, [
 				'file' => $error->getFile(),
 				'line' => $error->getLine(),
 				'trace' => $error->getTraceAsString(),
 			]);
 
-			$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
+			if ($this->container->getParameter('kernel.debug')) {
+				$this->setCaughtError(FormHandlerError::fromMessage($debugMessage, 500, $error));
+			} else {
+				$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
+			}
 		}
 
 		return $this;
