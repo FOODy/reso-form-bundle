@@ -400,15 +400,13 @@ class FormHandler
 			return $this->caughtError->getResponse();
 		}
 
-		$message = null;
-
 		foreach ($this->form->getErrors(true) as $error) {
-			$message = $error->getMessage();
-			break;
-		}
-
-		if ($message !== null) {
-			return new JsonResponse(['message' => $message], 400);
+			return new JsonResponse([
+				'message' => $error->getMessage(),
+				'formError' => [
+					'origin' => ($origin = $error->getOrigin()) ? $origin->getName() : null,
+				],
+			], 400);
 		}
 
 		return new Response(null, 500);
