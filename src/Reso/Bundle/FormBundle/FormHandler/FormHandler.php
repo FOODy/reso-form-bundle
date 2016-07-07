@@ -371,7 +371,7 @@ class FormHandler
 
 			if ($this->container->getParameter('kernel.debug')) {
 				$this->setCaughtError(FormHandlerError::fromMessage($debugMessage, 500, $error, [
-					'traceString' => $error->getTraceAsString(),
+					'trace' => explode("\n", $error->getTraceAsString()),
 				]));
 			} else {
 				$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
