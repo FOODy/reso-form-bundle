@@ -40,9 +40,11 @@ class FormHandlerError extends \Exception implements FormHandlerErrorInterface
 	 * @param \Exception $previous
 	 * @return static
 	 */
-	static public function fromMessage($message, $statusCode = 400, \Exception $previous = null)
+	static public function fromMessage($message, $statusCode = 400, \Exception $previous = null, array $userData = [])
 	{
-		return new static($message, new JsonResponse(['message' => $message], $statusCode), $previous);
+		$content = array_merge(['message' => $message], $userData);
+
+		return new static($message, new JsonResponse($content, $statusCode), $previous);
 	}
 
 	/**
