@@ -118,7 +118,7 @@ class FormHandler
 
 	/**
 	 * @param string $entityManagerName
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function setEntityManagerName($entityManagerName)
 	{
@@ -175,7 +175,7 @@ class FormHandler
 
 	/**
 	 * @param array $attributes
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function setAttributes(array $attributes)
 	{
@@ -186,7 +186,7 @@ class FormHandler
 
 	/**
 	 * @param array $attributes
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function addAttributes(array $attributes)
 	{
@@ -208,7 +208,7 @@ class FormHandler
 	/**
 	 * @param string $name
 	 * @param mixed $value
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function setAttribute($name, $value)
 	{
@@ -227,7 +227,7 @@ class FormHandler
 
 	/**
 	 * @param callable $serializer
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function setSerializer($serializer)
 	{
@@ -237,7 +237,7 @@ class FormHandler
 	}
 
 	/**
-	 * @return FormHandlerErrorInterface
+	 * @return $thisErrorInterface
 	 */
 	public function getCaughtError()
 	{
@@ -246,7 +246,7 @@ class FormHandler
 
 	/**
 	 * @param FormHandlerErrorInterface $caughtError
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function setCaughtError(FormHandlerErrorInterface $caughtError = null)
 	{
@@ -265,7 +265,7 @@ class FormHandler
 
 	/**
 	 * @param callable $persister
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function setPersister($persister)
 	{
@@ -292,7 +292,7 @@ class FormHandler
 
 	/**
 	 * @param mixed $serializedData
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function setSerializedData($serializedData)
 	{
@@ -324,7 +324,7 @@ class FormHandler
 	 * @param string $eventName
 	 * @param callable $listener
 	 * @param int $priority
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function addListener($eventName, $listener, $priority = 0)
 	{
@@ -335,7 +335,7 @@ class FormHandler
 
 	/**
 	 * @param EventSubscriberInterface $subscriber
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function addSubscriber(EventSubscriberInterface $subscriber)
 	{
@@ -347,7 +347,7 @@ class FormHandler
 	/**
 	 * @param Request $request
 	 * @param mixed $data
-	 * @return FormHandler
+	 * @return $this
 	 */
 	public function submitAndFlush(Request $request, $data = null)
 	{
@@ -416,7 +416,7 @@ class FormHandler
 
 	/**
 	 * @param mixed $data
-	 * @return FormHandler
+	 * @return $this
 	 */
 	protected function setData($data)
 	{
@@ -440,7 +440,7 @@ class FormHandler
 
 	/**
 	 * @param Request $request
-	 * @return FormHandler
+	 * @return $this
 	 */
 	protected function submit(Request $request)
 	{
@@ -480,7 +480,7 @@ class FormHandler
 	}
 
 	/**
-	 * @return FormHandler
+	 * @return $this
 	 */
 	protected function flush()
 	{
