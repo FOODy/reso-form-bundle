@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class FormHandler
 {
@@ -404,17 +403,8 @@ class FormHandler
 		}
 
 		foreach ($this->form->getErrors(true) as $error) {
-			$cause = $error->getCause();
-
-			if ($cause instanceof ConstraintViolationInterface) {
-				$violationCode = $cause->getCode();
-			} else {
-				$violationCode = null;
-			}
-
 			return new JsonResponse([
 				'message' => $error->getMessage(),
-				'violationCode' => $violationCode,
 				'formError' => [
 					'origin' => ($origin = $error->getOrigin()) ? $origin->getName() : null,
 				],
