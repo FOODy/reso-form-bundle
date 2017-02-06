@@ -154,15 +154,16 @@ class FormHandler
 
 	/**
 	 * @param string $name
+	 * @param mixed $defaultValue
 	 * @return mixed
 	 */
-	public function getOption($name)
+	public function getOption($name, $defaultValue = null)
 	{
-		if ($this->hasOption($name)) {
+		if (array_key_exists($name, $this->options)) {
 			return $this->options[$name];
 		}
 
-		throw new \InvalidArgumentException(sprintf('Option "%s" does not exist!', $name));
+		return $defaultValue;
 	}
 
 	/**
