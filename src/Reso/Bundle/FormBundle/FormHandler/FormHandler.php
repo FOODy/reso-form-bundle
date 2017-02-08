@@ -352,34 +352,10 @@ class FormHandler
 	 */
 	public function submitAndFlush(Request $request, $data = null)
 	{
-		try {
-			$this
-				->setData($data)
-				->submit($request)
-				->flush();
-		} catch (FormHandlerErrorInterface $error) {
-			$this->setCaughtError($error);
-		} catch (HttpException $error) {
-			$this->setCaughtError(FormHandlerError::fromMessage($error->getMessage(), $error->getStatusCode(), $error));
-		} catch (\Exception $error) {
-			$debugMessage = '[' . get_class($error) . '] ' . $error->getMessage();
-
-			$this->container->get('logger')->addError($debugMessage, [
-				'file' => $error->getFile(),
-				'line' => $error->getLine(),
-				'trace' => $error->getTraceAsString(),
-			]);
-
-			if ($this->container->getParameter('kernel.debug')) {
-				$this->setCaughtError(FormHandlerError::fromMessage($debugMessage, 500, $error, [
-					'trace' => explode("\n", $error->getTraceAsString()),
-				]));
-			} else {
-				$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
-			}
-		}
-
-		return $this;
+		return $this
+			->setData($data)
+			->submit($request)
+			->flush();
 	}
 
 	/**
@@ -416,10 +392,94 @@ class FormHandler
 	}
 
 	/**
+	 * @param mixed $error
+	 */
+	protected function handleError($error)
+	{
+		if ($error instanceof FormHandlerErrorInterface) {
+			$this->setCaughtError($error);
+
+			return;
+		}
+
+		if ($error instanceof HttpException) {
+			$this->setCaughtError(FormHandlerError::fromMessage($error->getMessage(), $error->getStatusCode(), $error));
+
+			return;
+		}
+
+		if ($error instanceof \Exception) {
+			$debugMessage = '[' . get_class($error) . '] ' . $error->getMessage();
+
+			$this->container->get('logger')->addError($debugMessage, [
+				'file' => $error->getFile(),
+				'line' => $error->getLine(),
+				'trace' => $error->getTraceAsString(),
+			]);
+
+			if ($this->container->getParameter('kernel.debug')) {
+				$this->setCaughtError(FormHandlerError::fromMessage($debugMessage, 500, $error, [
+					'trace' => explode("\n", $error->getTraceAsString()),
+				]));
+			} else {
+				$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
+			}
+
+			return;
+		}
+
+		$this->setCaughtError(FormHandlerError::fromMessage('', 500, $error));
+	}
+
+	/**
 	 * @param mixed $data
 	 * @return $this
 	 */
-	protected function setData($data)
+	public function setData($data)
+	{
+		try {
+			$this->setData($data);
+		} catch (\Exception $error) {
+			$this->handleError($error);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param Request $request
+	 * @return $this
+	 */
+	public function submit(Request $request)
+	{
+		try {
+			$this->doSubmit($request);
+		} catch (\Exception $error) {
+			$this->handleError($error);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function flush()
+	{
+		try {
+			$this->doFlush();
+		} catch (\Exception $error) {
+			$this->handleError($error);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param mixed $data
+	 * @return $this
+	 */
+	protected function doSetData($data)
 	{
 		$this->caughtError = null;
 		$this->serializedData = null;
@@ -443,7 +503,7 @@ class FormHandler
 	 * @param Request $request
 	 * @return $this
 	 */
-	protected function submit(Request $request)
+	protected function doSubmit(Request $request)
 	{
 		try {
 			$data = json_decode($request->getContent(), true);
@@ -483,7 +543,7 @@ class FormHandler
 	/**
 	 * @return $this
 	 */
-	protected function flush()
+	protected function doFlush()
 	{
 		if (!$this->isValid()) {
 			return $this;
