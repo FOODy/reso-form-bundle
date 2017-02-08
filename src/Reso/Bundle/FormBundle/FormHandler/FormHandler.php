@@ -238,7 +238,7 @@ class FormHandler
 	}
 
 	/**
-	 * @return $thisErrorInterface
+	 * @return FormHandlerErrorInterface
 	 */
 	public function getCaughtError()
 	{
@@ -353,8 +353,7 @@ class FormHandler
 	public function submitAndFlush(Request $request, $data = null)
 	{
 		return $this
-			->setData($data)
-			->submit($request)
+			->submit($request, $data)
 			->flush();
 	}
 
@@ -432,28 +431,14 @@ class FormHandler
 	}
 
 	/**
+	 * @param Request $request
 	 * @param mixed $data
 	 * @return $this
 	 */
-	public function setData($data)
+	public function submit(Request $request, $data = null)
 	{
 		try {
-			$this->setData($data);
-		} catch (\Exception $error) {
-			$this->handleError($error);
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @param Request $request
-	 * @return $this
-	 */
-	public function submit(Request $request)
-	{
-		try {
-			$this->doSubmit($request);
+			$this->doSubmit($request, $data);
 		} catch (\Exception $error) {
 			$this->handleError($error);
 		}
@@ -479,7 +464,7 @@ class FormHandler
 	 * @param mixed $data
 	 * @return $this
 	 */
-	protected function doSetData($data)
+	protected function setData($data)
 	{
 		$this->caughtError = null;
 		$this->serializedData = null;
@@ -501,11 +486,14 @@ class FormHandler
 
 	/**
 	 * @param Request $request
+	 * @param mixed $formData
 	 * @return $this
 	 */
-	protected function doSubmit(Request $request)
+	protected function doSubmit(Request $request, $formData)
 	{
 		try {
+			$this->setData($formData);
+
 			$data = json_decode($request->getContent(), true);
 
 			// Pre submit
