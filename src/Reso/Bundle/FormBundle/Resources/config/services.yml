@@ -2,6 +2,8 @@ parameters:
     rs.form_handler.class: Reso\Bundle\FormBundle\FormHandler\FormHandler
 
 services:
+    _defaults: { public: true }
+
     rs.form_handler.factory:
         class: Reso\Bundle\FormBundle\FormHandler\Factory\FormHandlerFactory
         arguments: ['@form.factory', '%rs.form_handler.class%']
