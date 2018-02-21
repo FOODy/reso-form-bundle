@@ -431,14 +431,14 @@ class FormHandler
 	}
 
 	/**
-	 * @param Request $request
+	 * @param Request|mixed $requestOrInputData
 	 * @param mixed $data
 	 * @return $this
 	 */
-	public function submit(Request $request, $data = null)
+	public function submit($requestOrInputData, $data = null)
 	{
 		try {
-			$this->doSubmit($request, $data);
+			$this->doSubmit($requestOrInputData, $data);
 		} catch (\Exception $error) {
 			$this->handleError($error);
 		}
@@ -485,16 +485,20 @@ class FormHandler
 	}
 
 	/**
-	 * @param Request $request
+	 * @param Request|mixed $requestOrInputData
 	 * @param mixed $formData
 	 * @return $this
 	 */
-	protected function doSubmit(Request $request, $formData)
+	protected function doSubmit($requestOrInputData, $formData)
 	{
 		try {
 			$this->setData($formData);
 
-			$data = json_decode($request->getContent(), true);
+			if ($requestOrInputData instanceof Request) {
+				$data = json_decode($requestOrInputData->getContent(), true);
+			} else {
+				$data = $requestOrInputData;
+			}
 
 			// Pre submit
 			$data = $this->dispatcher
