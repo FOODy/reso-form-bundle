@@ -346,14 +346,14 @@ class FormHandler
 	}
 
 	/**
-	 * @param Request $request
+	 * @param Request|mixed $requestOrInputData
 	 * @param mixed $data
 	 * @return $this
 	 */
-	public function submitAndFlush(Request $request, $data = null)
+	public function submitAndFlush($requestOrInputData, $data = null)
 	{
 		return $this
-			->submit($request, $data)
+			->submit($requestOrInputData, $data)
 			->flush();
 	}
 
