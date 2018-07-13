@@ -383,6 +383,7 @@ class FormHandler
 				'message' => $error->getMessage(),
 				'formError' => [
 					'origin' => ($origin = $error->getOrigin()) ? $origin->getName() : null,
+					'extraData' => array_keys($this->form->getExtraData()),
 				],
 			], 400);
 		}
