@@ -542,13 +542,13 @@ class FormHandler
 			return $this;
 		}
 
-		$this->dispatcher->dispatch(FormHandlerEvents::PRE_FLUSH, new FormHandlerEvent($this, $this->getData()));
+		$this->getEntityManager()->transactional(function () {
+			$this->dispatcher->dispatch(FormHandlerEvents::PRE_FLUSH, new FormHandlerEvent($this, $this->getData()));
 
-		if ($this->persister !== null) {
-			call_user_func($this->persister, $this);
-		}
-
-		$this->getEntityManager()->flush();
+			if ($this->persister !== null) {
+				call_user_func($this->persister, $this);
+			}
+		});
 
 		$this->dispatcher->dispatch(FormHandlerEvents::POST_FLUSH, new FormHandlerEvent($this, $this->getData()));
 
