@@ -366,6 +366,26 @@ class FormHandler
 	}
 
 	/**
+	 * @return $this
+	 */
+	public function assertValid()
+	{
+		if ($this->isValid()) {
+			return $this;
+		}
+
+		if ($this->caughtError !== null) {
+			throw $this->caughtError;
+		}
+
+		foreach ($this->form->getErrors(true) as $error) {
+			throw FormHandlerError::fromMessage($error->getMessage());
+		}
+
+		throw FormHandlerError::fromMessage('');
+	}
+
+	/**
 	 * @return Response
 	 */
 	public function toResponse()
